@@ -2,6 +2,7 @@ import sys, random, time, os
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
+from HUD import *
 import cv2
 
 class HUD(QWidget):
@@ -9,39 +10,17 @@ class HUD(QWidget):
         super().__init__() # Run QWidget init
         self.vid = Video() # Create video object
         self.setWindowTitle("WISP")
-        self.setGeometry(0, 0, 1280, 720)
+        self.setGeometry(0, 0, 720, 480)
         self.initHUD()
         self.show()
 
     # Setup Window
     def initHUD(self):
         self.layout = QGridLayout()
-
-
-        # Creation Widgets
-        self.CameraButton = QPushButton("Initiate Link")
-        self.Radar = QLabel()
-        self.HUD = QPixmap('Hudmockup.png')
-        self.OxygenLevels = QLabel('riseup')
-        # self.Oxygen = QPixmap('peanut.png')
-
-
-        # Link Widget to method
-        #self.CameraButton.clicked.connect(self.vid.start_camera)
         self.vid.start_camera()
-        self.Radar.setPixmap(self.HUD)
-        # self.OxygenLevels.setPixmap(self.Oxygen)
-
-
-        # Widget Tooltips
-        self.CameraButton.setToolTip('start the webcam')
-
         # Add Widget to Layout
         self.layout.addWidget(self.vid.picture,0,0)
-        self.layout.addWidget(self.Radar,0 ,0)
-
-
-
+        self.layout.addWidget(self.vid.gui, 0, 0)
         # Display Window
         self.setLayout(self.layout)
 
@@ -52,14 +31,16 @@ class Video(QWidget):
         self.timer = QTimer(self)
         self.fps = 30 # Set fps update rate
         self.picture = QLabel()
+        self.gui = QLabel()
 
 
     # Start Camera
     @pyqtSlot()
     def start_camera(self):
         self.cam = cv2.VideoCapture(0)
-        self.cam.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-        self.cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
+        self.cam.set(cv2.CAP_PROP_FRAME_WIDTH, 720)
+        self.cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+
 
         if not self.cam.isOpened():
             popUp = QMessageBox()
@@ -73,11 +54,13 @@ class Video(QWidget):
     # Draw the new frame to replace the old one
     @pyqtSlot()
     def update(self):
+        Overlay(25, 90, 1, -45)
         ret, frame = self.cam.read()
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB) # Webcam is in BGR needs to be converted
         img = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_RGB888)
         pix = QPixmap.fromImage(img)
         self.picture.setPixmap(pix)
+        self.gui.setPixmap(QPixmap('hud.png'))
 
 
 
