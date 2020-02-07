@@ -54,7 +54,7 @@ class Video(QWidget):
             return
         self.timer.timeout.connect(self.update)
         self.HudTimer.timeout.connect(self.refresh)
-        self.HudTimer.start(1000. /self.fps)
+        self.HudTimer.start(1000.)
         self.timer.start(1000. /self.fps) # start once every 41msec
 
     # Draw the new frame to replace the old one
