@@ -11,7 +11,7 @@ class HUD(QWidget):
     def __init__(self):
         super().__init__() # Run QWidget init
         self.vid = Video() # Create video object
-        self.hudthread = drawthread()
+        self.hudthread = Drawthread()
         self.setWindowTitle("WISP")
         self.setGeometry(0, 0, 640, 480)
         self.initHUD()

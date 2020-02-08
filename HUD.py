@@ -3,23 +3,19 @@ import threading
 import math
 from sensor import *
 
-class drawthread(threading.Thread):
+class Drawthread(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
 
     def run(self):
-        DrawNew()
-        print(starting thread)
+        self.drawNew()
+        print("starting thread")
 
 
-def DrawNew()
+def drawNew()
     while 1:
         sensoPlug = GetData()
         Overlay(sensoPlug[2], sensoPlug[1], sensoPlug[3], sensoPlug[0])
-
-
-
-
 
 
 def Overlay(temperature, angle, oxygen_level , heading):
