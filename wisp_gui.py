@@ -3,20 +3,23 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from HUD import *
-from sensor import *
+import threading
+#from sensor import *
 import cv2
 
 class HUD(QWidget):
     def __init__(self):
         super().__init__() # Run QWidget init
         self.vid = Video() # Create video object
+        self.hudthread = drawthread()
         self.setWindowTitle("WISP")
-        self.setGeometry(0, 0, 720, 480)
+        self.setGeometry(0, 0, 640, 480)
         self.initHUD()
         self.show()
 
     # Setup Window
     def initHUD(self):
+        self.hudthread.start()
         self.layout = QGridLayout()
         self.vid.start_camera()
         # Add Widget to Layout
@@ -53,8 +56,8 @@ class Video(QWidget):
             popUp.exec_()
             return
         self.timer.timeout.connect(self.update)
-        self.HudTimer.timeout.connect(self.refresh)
-        self.HudTimer.start(1000.)
+        #self.HudTimer.timeout.connect(self.refresh)
+        #self.HudTimer.start(1000.)
         self.timer.start(1000. /self.fps) # start once every 41msec
 
     # Draw the new frame to replace the old one
@@ -65,14 +68,15 @@ class Video(QWidget):
         img = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_RGB888)
         pix = QPixmap.fromImage(img)
         self.picture.setPixmap(pix)
-
+        Overlay(24, 12, 1, -45)
+        self.gui.setPixmap(QPixmap('hud.png'))
         
     # Draws hud overtop frame    
     @pyqtSlot()
     def refresh(self):
-        sensoPlug = GetData()
-        print(sensoPlug[2])
-        Overlay(sensoPlug[2], sensoPlug[1], sensoPlug[3], sensoPlug[0])
+        #sensoPlug = GetData()
+        #print(sensoPlug[2])
+        #Overlay(sensoPlug[2], sensoPlug[1], sensoPlug[3], sensoPlug[0])
         #self.test += 1
         #Overlay(45+self.test, 12+self.test, -50+self.test, self.test)
         self.gui.setPixmap(QPixmap('hud.png'))
