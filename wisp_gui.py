@@ -56,8 +56,8 @@ class Video(QWidget):
             popUp.exec_()
             return
         self.timer.timeout.connect(self.update)
-        #self.HudTimer.timeout.connect(self.refresh)
-        #self.HudTimer.start(1000.)
+        self.HudTimer.timeout.connect(self.refresh)
+        self.HudTimer.start(1000. /self.fps)
         self.timer.start(1000. /self.fps) # start once every 41msec
 
     # Draw the new frame to replace the old one
@@ -68,8 +68,8 @@ class Video(QWidget):
         img = QImage(frame, frame.shape[1], frame.shape[0], QImage.Format_RGB888)
         pix = QPixmap.fromImage(img)
         self.picture.setPixmap(pix)
-        Overlay(24, 12, 1, -45)
-        self.gui.setPixmap(QPixmap('hud.png'))
+        #Overlay(24, 12, 1, -45)
+        #self.gui.setPixmap(QPixmap('hud.png'))
         
     # Draws hud overtop frame    
     @pyqtSlot()

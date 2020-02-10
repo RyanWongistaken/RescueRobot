@@ -8,14 +8,13 @@ class Drawthread(threading.Thread):
         threading.Thread.__init__(self)
 
     def run(self):
-        self.drawNew()
-        print("starting thread")
+        while 1:
+            sensoPlug = GetData()
+            Overlay(sensoPlug[2], sensoPlug[1], sensoPlug[3], sensoPlug[0])
+            #print("drawing")
+        #self.drawNew()
+        #print("starting thread")
 
-
-def drawNew()
-    while 1:
-        sensoPlug = GetData()
-        Overlay(sensoPlug[2], sensoPlug[1], sensoPlug[3], sensoPlug[0])
 
 
 def Overlay(temperature, angle, oxygen_level , heading):
@@ -25,8 +24,8 @@ def Overlay(temperature, angle, oxygen_level , heading):
     #Temperature
     tempString = str(temperature) + "C"
     tempDraw = ImageDraw.Draw(hud)
-    font_forground = ImageFont.truetype("Assets\Cataclysmo.otf", 60)
-    font_background = ImageFont.truetype("Assets\Cataclysmo.otf", 65)
+    font_forground = ImageFont.truetype("Assets/Cataclysmo.otf", 60)
+    font_background = ImageFont.truetype("Assets/Cataclysmo.otf", 65)
     if temperature <= 10:
         tempDraw.text((width-58, height-50), tempString, font=font_background, fill=(68, 85, 90, 255))
     elif temperature >= 26 & temperature <= 35:
@@ -39,23 +38,23 @@ def Overlay(temperature, angle, oxygen_level , heading):
 
 
     #Tilt
-    wisp_symbol = Image.open("Assets\wisp.png")
-    horizon = Image.open("Assets\horizon.png")
+    wisp_symbol = Image.open("Assets/wisp.png")
+    horizon = Image.open("Assets/horizon.png")
     hud.paste(horizon.rotate(angle), (width-110, 10))
     hud.paste(wisp_symbol, (width-99, 22), wisp_symbol)
 
     #Oxygen
     if oxygen_level == 0:
-        O2Level = Image.open("Assets\oxygenlvl1.png")
+        O2Level = Image.open("Assets/oxygenlvl1.png")
     elif oxygen_level == 1:
-        O2Level = Image.open("Assets\oxygenlvl2.png")
+        O2Level = Image.open("Assets/oxygenlvl2.png")
     else:
-        O2Level = Image.open("Assets\oxygenlvl3.png")
+        O2Level = Image.open("Assets/oxygenlvl3.png")
     hud.paste(O2Level, (width-55, height-110))  # x by y
 
     #Compasss
-    compback = Image.open("Assets\compass.png")
-    needle = Image.open("Assets\_needle.png")
+    compback = Image.open("Assets/compass.png")
+    needle = Image.open("Assets/_needle.png")
     hud.paste(compback.rotate(heading, center=(50, 69)), (10, 0), compback.rotate(heading, center=(50, 69)))
     hud.paste(needle, (28, 25), needle)
 
