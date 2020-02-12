@@ -2,6 +2,7 @@ from PIL import Image, ImageDraw, ImageFont
 import threading
 import math
 from sensor import *
+ready = 1
 
 class Drawthread(threading.Thread):
     def __init__(self):
@@ -9,11 +10,14 @@ class Drawthread(threading.Thread):
 
     def run(self):
         while 1:
+            # self.test += 1
+            # Overlay(45+self.test, 12+self.test, -50+self.test, self.test)
             sensoPlug = GetData()
+            ready = 0
             Overlay(sensoPlug[2], sensoPlug[1], sensoPlug[3], sensoPlug[0])
-            #print("drawing")
-        #self.drawNew()
-        #print("starting thread")
+            ready = 1
+
+
 
 
 

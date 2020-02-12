@@ -12,6 +12,7 @@ class HUD(QWidget):
         super().__init__() # Run QWidget init
         self.vid = Video() # Create video object
         self.hudthread = Drawthread()
+        self.hudthread.daemon = True # The entire Python program exits when only daemon threads are left
         self.setWindowTitle("WISP")
         self.setGeometry(0, 0, 640, 480)
         self.initHUD()
@@ -74,12 +75,8 @@ class Video(QWidget):
     # Draws hud overtop frame    
     @pyqtSlot()
     def refresh(self):
-        #sensoPlug = GetData()
-        #print(sensoPlug[2])
-        #Overlay(sensoPlug[2], sensoPlug[1], sensoPlug[3], sensoPlug[0])
-        #self.test += 1
-        #Overlay(45+self.test, 12+self.test, -50+self.test, self.test)
-        self.gui.setPixmap(QPixmap('hud.png'))
+        if ready == 1: # update the frame if it is ready
+            self.gui.setPixmap(QPixmap('hud.png'))
         
 
 
@@ -88,5 +85,5 @@ def main():
     app = QApplication([])
     gui = HUD()
     app.exec_()
-    print("pain!")
+    print("Search Complete!")
 main()
