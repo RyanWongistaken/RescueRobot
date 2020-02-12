@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from HUD import *
+from control import *
 import threading
 #from sensor import *
 import cv2
@@ -12,7 +13,9 @@ class HUD(QWidget):
         super().__init__() # Run QWidget init
         self.vid = Video() # Create video object
         self.hudthread = Drawthread()
+        self.ctrlthread = Controlthread()
         self.hudthread.daemon = True # The entire Python program exits when only daemon threads are left
+		self.ctrlthread.daemon = True
         self.setWindowTitle("WISP")
         self.setGeometry(0, 0, 640, 480)
         self.initHUD()
@@ -21,6 +24,7 @@ class HUD(QWidget):
     # Setup Window
     def initHUD(self):
         self.hudthread.start()
+        self.ctrlthread.start()
         self.layout = QGridLayout()
         self.vid.start_camera()
         # Add Widget to Layout
@@ -28,6 +32,12 @@ class HUD(QWidget):
         self.layout.addWidget(self.vid.gui, 0, 0)
         # Display Window
         self.setLayout(self.layout)
+
+    #runs when window is closed
+    def closeEvent(self, *args, **kwargs):
+        super(QtGui.QMainWindow, self).closeEvent(*args, **kwargs)
+        self.ctrlthread.pi.stop()
+
 
 
 class Video(QWidget):
