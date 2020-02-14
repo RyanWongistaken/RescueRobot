@@ -1,15 +1,25 @@
 import pigpio
 import time
 import xbox
+import threading
+
+#joy = xbox.Joystick()
 
 class Controlthread(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
+
+
+    def FORWARD(MOTOR):
+        pi.write(MOTOR['a'], 1)
+        pi.write(MOTOR['b'], 0)
+
+    def REVERSE(MOTOR):
+        pi.write(MOTOR['a'], 0)
+        pi.write(MOTOR['b'], 1)
+
+    def run(self):
         joy = xbox.Joystick()
-        # Motor Configuration
-        # A----C
-        # B----D
-        # pins for motor control
         PIN_A = 17
         PIN_B = 27
         PIN_EN = 22
@@ -26,19 +36,37 @@ class Controlthread(threading.Thread):
         tilt = 1600
         sens = 1
         pi.write(PIN_EN, 0)
+        
+        LIGHT_PIN = 21
+        RED_PIN = 12
+        GREEN_PIN = 5
+        BLUE_PIN = 6
+        BRIGHTNESS = 0 
 
-    def FORWARD(MOTOR):
-        pi.write(MOTOR['a'], 1)
-        pi.write(MOTOR['b'], 0)
-
-    def REVERSE(MOTOR):
-        pi.write(MOTOR['a'], 0)
-        pi.write(MOTOR['b'], 1)
-
-    def run(self):
         while 1:
             (left_x, left_y) = joy.leftStick()
             (right_x, right_y) = joy.rightStick()
+            
+            if(joy.dpadUp()):
+                BRIGHTNESS += 1
+                if(BRIGHTNESS > 255):
+                    BRIGHTNESS = 255
+            elif(joy.dpadDown()):
+                BRIGHTNESS -= 1
+                if(BRIGHTNESS < 0):
+                    BRIGHTNESS = 0
+    
+            if (joy.X()):
+                pi.write(RED_PIN, 1)
+                pi.write(GREEN_PIN, 1)
+                pi.write(BLUE_PIN, 0)
+
+            if(joy.B()):
+                pi.write(RED_PIN, 0)
+                pi.write(GREEN_PIN, 1)                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+                pi.write(BLUE_PIN, 1)
+                         
+            pi.set_PWM_dutycycle(LIGHT_PIN, BRIGHTNESS)
 
             if (abs(left_y) > abs(left_x)):
                 speed_l = abs(left_y) * (255)
@@ -101,8 +129,8 @@ class Controlthread(threading.Thread):
             pi.set_servo_pulsewidth(servo['top'], tilt)
             # print("PUlse: ", servoPulse)
 
-            print("Pan:", pan, "Tilt", tilt, "BIN:", speed_b, "0: ", bit0, "1: ", bit1, "2: ",
-                  bit2)  # "L: ", left_x, " | Y:", left_y, " | S:", speed_l)
+            #print("Pan:", pan, "Tilt", tilt, "BIN:", speed_b, "0: ", bit0, "1: ", bit1, "2: ",
+                  #bit2)  # "L: ", left_x, " | Y:", left_y, " | S:", speed_l)
 
 
 

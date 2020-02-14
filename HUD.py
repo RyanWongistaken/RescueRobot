@@ -1,6 +1,7 @@
 from PIL import Image, ImageDraw, ImageFont
 import threading
 import math
+import time
 from sensor import *
 ready = 1
 
@@ -13,15 +14,18 @@ class Drawthread(threading.Thread):
             # self.test += 1
             # Overlay(45+self.test, 12+self.test, -50+self.test, self.test)
             sensoPlug = GetData()
-            ready = 0
-            Overlay(sensoPlug[2], sensoPlug[1], sensoPlug[3], sensoPlug[0])
-            ready = 1
+            Overlay(sensoPlug[2], sensoPlug[1], sensoPlug[3], sensoPlug[0],'hud.png')
+            
+        
+            
+            
+            
 
 
 
 
 
-def Overlay(temperature, angle, oxygen_level , heading):
+def Overlay(temperature, angle, oxygen_level , heading, name):
     hud = Image.new('RGBA', (640, 480), (255, 0, 0, 0))
     width, height = hud.size
 
@@ -63,7 +67,7 @@ def Overlay(temperature, angle, oxygen_level , heading):
     hud.paste(needle, (28, 25), needle)
 
 
-    hud.save('hud.png', 'PNG')
+    hud.save(name, 'PNG')
     return
 
 

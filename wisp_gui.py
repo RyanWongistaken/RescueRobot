@@ -8,6 +8,8 @@ import threading
 #from sensor import *
 import cv2
 
+buffFrame = 1
+
 class HUD(QWidget):
     def __init__(self):
         super().__init__() # Run QWidget init
@@ -15,7 +17,7 @@ class HUD(QWidget):
         self.hudthread = Drawthread()
         self.ctrlthread = Controlthread()
         self.hudthread.daemon = True # The entire Python program exits when only daemon threads are left
-		self.ctrlthread.daemon = True
+        #self.ctrlthread.daemon = True
         self.setWindowTitle("WISP")
         self.setGeometry(0, 0, 640, 480)
         self.initHUD()
@@ -50,6 +52,7 @@ class Video(QWidget):
         self.gui = QLabel()
         self.test = 0
         
+        
 
 
     # Start Camera
@@ -68,7 +71,7 @@ class Video(QWidget):
             return
         self.timer.timeout.connect(self.update)
         self.HudTimer.timeout.connect(self.refresh)
-        self.HudTimer.start(1000. /self.fps)
+        self.HudTimer.start(1000. / 1)
         self.timer.start(1000. /self.fps) # start once every 41msec
 
     # Draw the new frame to replace the old one
@@ -85,8 +88,13 @@ class Video(QWidget):
     # Draws hud overtop frame    
     @pyqtSlot()
     def refresh(self):
-        if ready == 1: # update the frame if it is ready
-            self.gui.setPixmap(QPixmap('hud.png'))
+        self.gui.setPixmap(QPixmap('hud.png'))
+        
+        
+
+            
+        
+            
         
 
 
