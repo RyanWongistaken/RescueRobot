@@ -8,7 +8,7 @@ import threading
 #from sensor import *
 import cv2
 
-buffFrame = 1
+
 
 class HUD(QWidget):
     def __init__(self):
@@ -88,6 +88,9 @@ class Video(QWidget):
     # Draws hud overtop frame    
     @pyqtSlot()
     def refresh(self):
+        if not buff.empty():
+            sensoPlug = buff.get()
+            Overlay(sensoPlug[2], sensoPlug[1], sensoPlug[3], sensoPlug[0], 'hud.png')
         self.gui.setPixmap(QPixmap('hud.png'))
         
         

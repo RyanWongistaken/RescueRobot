@@ -1,9 +1,10 @@
 from PIL import Image, ImageDraw, ImageFont
 import threading
+import queue
 import math
 import time
 from sensor import *
-ready = 1
+buff = queue.LifoQueue()
 
 class Drawthread(threading.Thread):
     def __init__(self):
@@ -11,10 +12,9 @@ class Drawthread(threading.Thread):
 
     def run(self):
         while 1:
-            # self.test += 1
-            # Overlay(45+self.test, 12+self.test, -50+self.test, self.test)
             sensoPlug = GetData()
-            Overlay(sensoPlug[2], sensoPlug[1], sensoPlug[3], sensoPlug[0],'hud.png')
+            buff.put(sensoPlug)
+            #Overlay(sensoPlug[2], sensoPlug[1], sensoPlug[3], sensoPlug[0],'hud.png')
             
         
             
